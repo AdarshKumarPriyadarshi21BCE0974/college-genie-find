@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { X } from "lucide-react";
@@ -17,7 +16,7 @@ const Navbar = () => {
               <Link to="/" className="flex-shrink-0 flex items-center">
                 <div className="flex items-center gap-2">
                   <img 
-                    src={`${window.location.origin}/lovable-uploads/fca05372-ca4a-416b-8bf8-af8eb70315ba.png`} 
+                    src={`${window.location.origin}/lovable-uploads/03d6a3e7-13d5-4799-85cd-32d63ae96ee1.png`}
                     alt="College Genie Logo" 
                     className="h-10 w-10 rounded-full"
                   />
@@ -28,7 +27,6 @@ const Navbar = () => {
               </Link>
             </div>
             
-            {/* Desktop Navigation */}
             <div className="hidden md:flex md:items-center md:space-x-8">
               <Link to="/" className="text-gray-700 hover:text-orange-500 px-3 py-2 rounded-md text-sm font-medium">
                 Home
@@ -50,7 +48,6 @@ const Navbar = () => {
               </Link>
             </div>
             
-            {/* Mobile menu button */}
             <div className="md:hidden flex items-center">
               <button 
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -74,7 +71,6 @@ const Navbar = () => {
           </div>
         </div>
         
-        {/* Mobile menu */}
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="pt-2 pb-3 space-y-1">
@@ -118,7 +114,6 @@ const Navbar = () => {
         )}
       </nav>
 
-      {/* Bachelor's popup dialog */}
       <Dialog open={showBachelorPopup} onOpenChange={setShowBachelorPopup}>
         <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ${showBachelorPopup ? '' : 'hidden'}`}>
           <div className="bg-white rounded-lg p-6 max-w-sm mx-auto relative">

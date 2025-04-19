@@ -39,7 +39,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ onComplete }) => {
         {stage === 1 ? (
           <div className="w-60 h-60 mx-auto mb-8">
             <img 
-              src={`${window.location.origin}/lovable-uploads/ead941d3-a52e-4171-a59c-f853379b8b03.png`} 
+              src={`${window.location.origin}/lovable-uploads/f9a06b5c-5197-4713-a89c-63a4e8d85bc6.png`} 
               alt="Evaluating profile" 
               className="w-full h-full object-contain"
             />
@@ -47,7 +47,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ onComplete }) => {
         ) : (
           <div className="w-60 h-60 mx-auto mb-8">
             <img 
-              src={`${window.location.origin}/lovable-uploads/e54d865d-d98b-4a7c-af15-e48dd9f28cb3.png`} 
+              src={`${window.location.origin}/lovable-uploads/14d25593-3e3d-4665-93c6-2d6958e28b81.png`} 
               alt="Matching universities" 
               className="w-full h-full object-contain"
             />

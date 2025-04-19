@@ -7,7 +7,7 @@ const Team = () => {
     {
       name: "Adarsh Kumar Priyadarshi",
       role: "ML Developer & Co-founder",
-      image: `${window.location.origin}/lovable-uploads/285030a9-9623-4045-8493-ec33e4052c9d.png`,
+      image: `${window.location.origin}/lovable-uploads/f5ec312c-7f14-40b0-9977-557c2f236cac.png`,
       description: "Adarsh specializes in machine learning algorithms and data analysis, developing the recommendation engine that powers College Genie.",
       links: {
         linkedin: "#",
@@ -18,7 +18,7 @@ const Team = () => {
     {
       name: "Taniya Khemchandani",
       role: "Frontend Developer & Co-founder",
-      image: `${window.location.origin}/lovable-uploads/8ade4475-80b5-41cf-98d1-0b16369670d0.png`,
+      image: `${window.location.origin}/lovable-uploads/d4a9ae9b-4c1a-405d-9903-7e47c8d00d18.png`,
       description: "Taniya leads frontend development and user experience, creating the intuitive interface that makes College Genie easy to use.",
       links: {
         linkedin: "#",
