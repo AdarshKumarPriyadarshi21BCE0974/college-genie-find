@@ -7,7 +7,7 @@ const Team = () => {
     {
       name: "Adarsh Kumar Priyadarshi",
       role: "ML Developer & Co-founder",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
+      image: `${window.location.origin}/lovable-uploads/285030a9-9623-4045-8493-ec33e4052c9d.png`,
       description: "Adarsh specializes in machine learning algorithms and data analysis, developing the recommendation engine that powers College Genie.",
       links: {
         linkedin: "#",
@@ -18,7 +18,7 @@ const Team = () => {
     {
       name: "Taniya Khemchandani",
       role: "Frontend Developer & Co-founder",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
+      image: `${window.location.origin}/lovable-uploads/8ade4475-80b5-41cf-98d1-0b16369670d0.png`,
       description: "Taniya leads frontend development and user experience, creating the intuitive interface that makes College Genie easy to use.",
       links: {
         linkedin: "#",
@@ -32,13 +32,13 @@ const Team = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow">
-        <div className="bg-gradient-to-r from-purple-50 to-blue-50 py-16">
+        <div className="bg-orange-500 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+              <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
                 <span className="block">Our Team</span>
               </h1>
-              <p className="mt-3 max-w-md mx-auto text-base text-gray-600 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+              <p className="mt-3 max-w-md mx-auto text-base text-white sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
                 Meet the dedicated individuals behind College Genie.
               </p>
             </div>
@@ -50,15 +50,15 @@ const Team = () => {
             <div className="space-y-12 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0">
               {teamMembers.map((member, index) => (
                 <div key={index} className="space-y-5 sm:space-y-4">
-                  <div className="aspect-w-3 aspect-h-2">
-                    <img className="object-cover shadow-lg rounded-lg h-80 w-full" src={member.image} alt={member.name} />
+                  <div className="aspect-w-1 aspect-h-1 mx-auto" style={{ maxWidth: "250px" }}>
+                    <img className="object-cover shadow-lg rounded-full h-56 w-56 mx-auto" src={member.image} alt={member.name} />
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 text-center">
                     <div className="text-2xl leading-8 font-bold tracking-tight">{member.name}</div>
                     <div className="text-lg leading-7 font-medium text-orange-500">{member.role}</div>
                     <p className="text-gray-600">{member.description}</p>
                   </div>
-                  <div className="flex space-x-5">
+                  <div className="flex justify-center space-x-5">
                     <a href={member.links.linkedin} className="text-gray-500 hover:text-gray-600">
                       <span className="sr-only">LinkedIn</span>
                       <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
