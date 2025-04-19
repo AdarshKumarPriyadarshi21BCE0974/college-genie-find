@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { FormData, University, countries, majors, mockUniversities } from '../types';
@@ -9,29 +10,40 @@ import ProgressSteps from '../components/college-finder/ProgressSteps';
 import LoadingAnimation from '../components/college-finder/LoadingAnimation';
 import { toast } from '../hooks/use-toast';
 
+const initialFormData: Partial<FormData> = {
+  degree: undefined,
+  country: '',
+  major: '',
+  undergradCollege: '',
+  undergradMajor: '',
+  score: 0,
+  scoreType: '10 CGPA',
+  backlogs: 0,
+  englishTest: null,
+  englishScore: 0,
+  aptitudeTest: 'None',
+  workExperience: 0,
+  researchPapers: 'None',
+  projects: 0
+};
+
 const CollegeFinder: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [formData, setFormData] = useState<Partial<FormData>>({
-    degree: undefined,
-    country: '',
-    major: '',
-    undergradCollege: '',
-    undergradMajor: '',
-    score: 0,
-    scoreType: '10 CGPA',
-    backlogs: 0,
-    englishTest: null,
-    englishScore: 0,
-    aptitudeTest: 'None',
-    workExperience: 0,
-    researchPapers: 'None',
-    projects: 0
-  });
+  const [formData, setFormData] = useState<Partial<FormData>>({...initialFormData});
   const [universities, setUniversities] = useState<University[]>([]);
   const [showResults, setShowResults] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
   const scoreTypeDropdownRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+  
+  // Reset form when navigating to the page
+  useEffect(() => {
+    setFormData({...initialFormData});
+    setCurrentStep(1);
+    setShowResults(false);
+    setFormErrors({});
+  }, [location.key]);
   
   // Event listener to close the score dropdown when clicking outside
   useEffect(() => {
@@ -51,6 +63,17 @@ const CollegeFinder: React.FC = () => {
   }, []);
 
   const handleInputChange = (field: keyof FormData, value: any) => {
+    // Special handling for englishTest change
+    if (field === 'englishTest' && formData.englishTest !== value) {
+      // If changing test types, reset the score
+      setFormData(prev => ({ 
+        ...prev, 
+        [field]: value,
+        englishScore: 0  // Reset the score
+      }));
+      return;
+    }
+    
     // Handle validation for specific fields
     if (field === 'englishScore') {
       if (value < 0) {
@@ -75,6 +98,7 @@ const CollegeFinder: React.FC = () => {
     if (field === 'workExperience') {
       if (value < 0) {
         setFormErrors({...formErrors, workExperience: 'Please enter valid work experience'});
+        return;
       } else {
         const { workExperience, ...rest } = formErrors;
         setFormErrors(rest);
@@ -83,7 +107,8 @@ const CollegeFinder: React.FC = () => {
     
     if (field === 'projects') {
       if (value < 0) {
-        setFormErrors({...formErrors, projects: 'Please enter valid number of experience'});
+        setFormErrors({...formErrors, projects: 'Please enter valid number of projects'});
+        return;
       } else {
         const { projects, ...rest } = formErrors;
         setFormErrors(rest);
@@ -125,17 +150,20 @@ const CollegeFinder: React.FC = () => {
   };
 
   const handleBachelorClick = () => {
-    const navbarComponent = document.querySelector('nav');
-    if (navbarComponent) {
-      // Access the showBachelorPopup state in the Navbar component
-      const event = new CustomEvent('showBachelorPopup');
-      document.dispatchEvent(event);
-      // Temporary solution: use toast as fallback
-      toast({
-        title: "Coming Soon",
-        description: "Bachelor's degree recommendations will be available soon!",
-      });
-    }
+    const event = new CustomEvent('showBachelorPopup');
+    document.dispatchEvent(event);
+    // Temporary solution: use toast as fallback
+    toast({
+      title: "Coming Soon",
+      description: "Bachelor's degree recommendations will be available soon!",
+    });
+  };
+
+  const resetForm = () => {
+    setFormData({...initialFormData});
+    setCurrentStep(1);
+    setShowResults(false);
+    setFormErrors({});
   };
 
   // Function to determine if the current step is valid and the Next button should be enabled
@@ -209,29 +237,29 @@ const CollegeFinder: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-8">
+            <div className="mt-6">
               <label className="block text-gray-700 text-sm font-semibold mb-2">
-                Where do you want to study? <span className="text-red-500">*</span>
+                What are you planning to study? <span className="text-red-500">*</span>
               </label>
-              <div className="mt-2">
-                <CountrySelector
-                  countries={countries}
-                  value={formData.country || null}
-                  onChange={(value) => handleInputChange('country', value)}
+              <div className="mt-1">
+                <MajorSelector
+                  majors={majors}
+                  value={formData.major || null}
+                  onChange={(value) => handleInputChange('major', value)}
                   isRequired
                 />
               </div>
             </div>
 
-            <div className="mt-8">
+            <div className="mt-6">
               <label className="block text-gray-700 text-sm font-semibold mb-2">
-                What are you planning to study? <span className="text-red-500">*</span>
+                Where do you want to study? <span className="text-red-500">*</span>
               </label>
-              <div className="mt-2">
-                <MajorSelector
-                  majors={majors}
-                  value={formData.major || null}
-                  onChange={(value) => handleInputChange('major', value)}
+              <div className="mt-1">
+                <CountrySelector
+                  countries={countries}
+                  value={formData.country || null}
+                  onChange={(value) => handleInputChange('country', value)}
                   isRequired
                 />
               </div>
@@ -241,7 +269,7 @@ const CollegeFinder: React.FC = () => {
       
       case 2:
         return (
-          <div className="space-y-6">
+          <div className="space-y-5">
             <div>
               <label className="block text-gray-700 text-sm font-semibold mb-2">
                 What was your undergraduate college name? <span className="text-red-500">*</span>
@@ -345,7 +373,7 @@ const CollegeFinder: React.FC = () => {
       
       case 3:
         return (
-          <div className="space-y-6">
+          <div className="space-y-5">
             <div>
               <label className="block text-gray-700 text-sm font-semibold mb-2">
                 Which English test did you take? <span className="text-red-500">*</span>
@@ -491,8 +519,8 @@ const CollegeFinder: React.FC = () => {
       
       case 4:
         return (
-          <div className="space-y-6">
-            <div className="grid md:grid-cols-3 gap-8">
+          <div className="space-y-8">
+            <div className="grid md:grid-cols-1 gap-6">
               <div>
                 <label className="block text-gray-700 text-sm font-semibold mb-2">
                   How much relevant work experience do you have?
@@ -502,8 +530,8 @@ const CollegeFinder: React.FC = () => {
                     type="number"
                     className="flex-1 border border-gray-300 rounded-l-md p-3"
                     placeholder="e.g: 20"
-                    value={formData.workExperience || ''}
-                    onChange={(e) => handleInputChange('workExperience', parseInt(e.target.value))}
+                    value={formData.workExperience === 0 ? '' : formData.workExperience}
+                    onChange={(e) => handleInputChange('workExperience', parseInt(e.target.value || '0'))}
                     min={0}
                   />
                   <span className="bg-gray-100 border border-l-0 border-gray-300 rounded-r-md px-3 flex items-center">
@@ -514,50 +542,50 @@ const CollegeFinder: React.FC = () => {
                   <p className="mt-1 text-sm text-red-500">{formErrors.workExperience}</p>
                 )}
               </div>
+            </div>
 
-              <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Have you published any relevant research papers?
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {['International', 'National', 'None'].map((type) => (
-                    <button
-                      key={type}
-                      type="button"
-                      className={`p-2 border text-sm rounded-md ${
-                        formData.researchPapers === type
-                          ? 'border-orange-500 bg-orange-50'
-                          : 'border-gray-300'
-                      }`}
-                      onClick={() => handleInputChange('researchPapers', type)}
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
+            <div>
+              <label className="block text-gray-700 text-sm font-semibold mb-2">
+                Have you published any relevant research papers?
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {['International', 'National', 'None'].map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    className={`p-2 border text-sm rounded-md ${
+                      formData.researchPapers === type
+                        ? 'border-orange-500 bg-orange-50'
+                        : 'border-gray-300'
+                    }`}
+                    onClick={() => handleInputChange('researchPapers', type)}
+                  >
+                    {type}
+                  </button>
+                ))}
               </div>
+            </div>
 
-              <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  How many relevant projects have you done?
-                </label>
-                <div className="flex">
-                  <input
-                    type="number"
-                    className="flex-1 border border-gray-300 rounded-l-md p-3"
-                    placeholder="e.g: 2"
-                    value={formData.projects || ''}
-                    onChange={(e) => handleInputChange('projects', parseInt(e.target.value))}
-                    min={0}
-                  />
-                  <span className="bg-gray-100 border border-l-0 border-gray-300 rounded-r-md px-3 flex items-center">
-                    Projects
-                  </span>
-                </div>
-                {formErrors.projects && (
-                  <p className="mt-1 text-sm text-red-500">{formErrors.projects}</p>
-                )}
+            <div>
+              <label className="block text-gray-700 text-sm font-semibold mb-2">
+                How many relevant projects have you done?
+              </label>
+              <div className="flex">
+                <input
+                  type="number"
+                  className="flex-1 border border-gray-300 rounded-l-md p-3"
+                  placeholder="e.g: 2"
+                  value={formData.projects === 0 ? '' : formData.projects}
+                  onChange={(e) => handleInputChange('projects', parseInt(e.target.value || '0'))}
+                  min={0}
+                />
+                <span className="bg-gray-100 border border-l-0 border-gray-300 rounded-r-md px-3 flex items-center">
+                  Projects
+                </span>
               </div>
+              {formErrors.projects && (
+                <p className="mt-1 text-sm text-red-500">{formErrors.projects}</p>
+              )}
             </div>
           </div>
         );
@@ -622,19 +650,6 @@ const CollegeFinder: React.FC = () => {
       </div>
     );
   };
-
-  // Register event listener for the Bachelor's popup
-  useEffect(() => {
-    // Listen for the custom event from the Navbar component
-    const handleShowBachelorPopup = () => {
-      // This will be handled by the Navbar component
-    };
-
-    document.addEventListener('showBachelorPopup', handleShowBachelorPopup);
-    return () => {
-      document.removeEventListener('showBachelorPopup', handleShowBachelorPopup);
-    };
-  }, []);
 
   if (isLoading) {
     return <LoadingAnimation onComplete={() => {
@@ -720,10 +735,7 @@ const CollegeFinder: React.FC = () => {
               <div className="mt-8">
                 <button
                   className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md"
-                  onClick={() => {
-                    setShowResults(false);
-                    setCurrentStep(1);
-                  }}
+                  onClick={resetForm}
                 >
                   Start New Search
                 </button>

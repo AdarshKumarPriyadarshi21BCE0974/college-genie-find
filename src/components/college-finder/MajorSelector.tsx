@@ -37,6 +37,8 @@ const MajorSelector: React.FC<MajorSelectorProps> = ({
       }}
       placeholder={placeholder}
       required={isRequired}
+      maxMenuHeight={280} // Show more options in the dropdown
+      menuPortalTarget={document.body} // To ensure dropdown is not cut off
       styles={{
         control: (baseStyles, state) => ({
           ...baseStyles,
@@ -50,19 +52,25 @@ const MajorSelector: React.FC<MajorSelectorProps> = ({
         option: (baseStyles, state) => ({
           ...baseStyles,
           backgroundColor: state.isSelected 
-            ? '#9b87f5' 
+            ? '#f97316' // Changed to orange
             : state.isFocused 
               ? '#f2f2f2' 
               : 'white',
           color: state.isSelected ? 'white' : 'black',
           '&:hover': {
-            backgroundColor: state.isSelected ? '#9b87f5' : '#f2f2f2',
+            backgroundColor: state.isSelected ? '#f97316' : '#f2f2f2',
           },
-          cursor: 'pointer'
+          cursor: 'pointer',
+          padding: '8px 12px', // More compact padding
+          fontSize: '0.9rem' // Slightly smaller font
         }),
         menu: (baseStyles) => ({
           ...baseStyles,
           zIndex: 30
+        }),
+        menuPortal: (base) => ({
+          ...base,
+          zIndex: 9999,
         })
       }}
     />

@@ -1,11 +1,26 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
+import { toast } from "../ui/use-toast";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showBachelorPopup, setShowBachelorPopup] = useState(false);
+  const location = useLocation();
+
+  // Listen for custom event from the CollegeFinder component
+  useEffect(() => {
+    const handleShowBachelorPopup = () => {
+      setShowBachelorPopup(true);
+    };
+
+    document.addEventListener('showBachelorPopup', handleShowBachelorPopup);
+    return () => {
+      document.removeEventListener('showBachelorPopup', handleShowBachelorPopup);
+    };
+  }, []);
 
   return (
     <>
@@ -16,7 +31,7 @@ const Navbar = () => {
               <Link to="/" className="flex-shrink-0 flex items-center">
                 <div className="flex items-center gap-2">
                   <img 
-                    src={`${window.location.origin}/lovable-uploads/03d6a3e7-13d5-4799-85cd-32d63ae96ee1.png`}
+                    src={`${window.location.origin}/lovable-uploads/87a18f30-77c1-4a0f-8d46-b0d162d0a383.png`}
                     alt="College Genie Logo" 
                     className="h-10 w-10 rounded-full"
                   />
