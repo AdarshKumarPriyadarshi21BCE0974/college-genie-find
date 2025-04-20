@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
@@ -9,6 +8,9 @@ import MajorSelector from '../components/college-finder/MajorSelector';
 import ProgressSteps from '../components/college-finder/ProgressSteps';
 import LoadingAnimation from '../components/college-finder/LoadingAnimation';
 import { toast } from '../hooks/use-toast';
+import { coursesData } from '@/constants/courses';
+import { fetchUniversityRecommendations } from '@/utils/api';
+import type { UniversityRequestPayload } from '@/types/api';
 
 const initialFormData: Partial<FormData> = {
   degree: undefined,
@@ -37,7 +39,6 @@ const CollegeFinder: React.FC = () => {
   const scoreTypeDropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   
-  // Reset form when navigating to the page
   useEffect(() => {
     setFormData({...initialFormData});
     setCurrentStep(1);
@@ -45,7 +46,6 @@ const CollegeFinder: React.FC = () => {
     setFormErrors({});
   }, [location.key]);
   
-  // Event listener to close the score dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (scoreTypeDropdownRef.current && !scoreTypeDropdownRef.current.contains(event.target as Node)) {
@@ -63,18 +63,15 @@ const CollegeFinder: React.FC = () => {
   }, []);
 
   const handleInputChange = (field: keyof FormData, value: any) => {
-    // Special handling for englishTest change
     if (field === 'englishTest' && formData.englishTest !== value) {
-      // If changing test types, reset the score
       setFormData(prev => ({ 
         ...prev, 
         [field]: value,
-        englishScore: 0  // Reset the score
+        englishScore: 0
       }));
       return;
     }
     
-    // Handle validation for specific fields
     if (field === 'englishScore') {
       if (value < 0) {
         setFormErrors({...formErrors, englishScore: 'Enter valid score'});
@@ -84,7 +81,6 @@ const CollegeFinder: React.FC = () => {
         setFormErrors(rest);
       }
 
-      // Validate based on test type
       const maxScore = 
         formData.englishTest === 'TOEFL' ? 120 : 
         formData.englishTest === 'IELTS' ? 9 : 
@@ -128,18 +124,41 @@ const CollegeFinder: React.FC = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Process form submission
       setIsLoading(true);
-      // Simulate loading time
-      setTimeout(() => {
-        setUniversities(mockUniversities);
-        setIsLoading(false);
+      
+      try {
+        const payload: UniversityRequestPayload = {
+          country: formData.country?.toLowerCase().replace(/\s+/g, '_') || '',
+          intended_course_taxonomy_id: parseInt(formData.intendedCourseTaxonomyId || '0'),
+          grade: formData.score?.toString() || '0',
+          grade_scale: formData.scoreType || '10',
+          college: 6,
+          major: formData.major || '',
+          backlogs: formData.backlogs || 0,
+          is_stem: true,
+          SOP: 3,
+          LOR: 3,
+          Resume: 3,
+          ielts_overall: formData.englishTest === 'IELTS' ? (formData.englishScore || 0) : 9
+        };
+
+        const result = await fetchUniversityRecommendations(payload);
+        setUniversities(result.universities);
         setShowResults(true);
-      }, 3000);
+      } catch (error) {
+        console.error('Error fetching university recommendations:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch university recommendations. Please try again.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -152,7 +171,6 @@ const CollegeFinder: React.FC = () => {
   const handleBachelorClick = () => {
     const event = new CustomEvent('showBachelorPopup');
     document.dispatchEvent(event);
-    // Temporary solution: use toast as fallback
     toast({
       title: "Coming Soon",
       description: "Bachelor's degree recommendations will be available soon!",
@@ -166,7 +184,6 @@ const CollegeFinder: React.FC = () => {
     setFormErrors({});
   };
 
-  // Function to determine if the current step is valid and the Next button should be enabled
   const isNextButtonDisabled = () => {
     if (Object.keys(formErrors).length > 0) return true;
     
@@ -243,9 +260,12 @@ const CollegeFinder: React.FC = () => {
               </label>
               <div className="mt-1">
                 <MajorSelector
-                  majors={majors}
+                  majors={coursesData}
                   value={formData.major || null}
-                  onChange={(value) => handleInputChange('major', value)}
+                  onChange={(majorName, taxonomyId) => {
+                    handleInputChange('major', majorName);
+                    handleInputChange('intendedCourseTaxonomyId', taxonomyId.toString());
+                  }}
                   isRequired
                 />
               </div>
