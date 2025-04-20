@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import { FormData, University, countries, majors, mockUniversities } from '../types';
+import { FormData, University, countries, mockUniversities } from '../types';
 import CountrySelector from '../components/college-finder/CountrySelector';
 import MajorSelector from '../components/college-finder/MajorSelector';
 import ProgressSteps from '../components/college-finder/ProgressSteps';
@@ -16,6 +16,7 @@ const initialFormData: Partial<FormData> = {
   degree: undefined,
   country: '',
   major: '',
+  intendedCourseTaxonomyId: '',
   undergradCollege: '',
   undergradMajor: '',
   score: 0,
@@ -261,7 +262,7 @@ const CollegeFinder: React.FC = () => {
               <div className="mt-1">
                 <MajorSelector
                   majors={coursesData}
-                  value={formData.major || null}
+                  value={formData.intendedCourseTaxonomyId || null}
                   onChange={(majorName, taxonomyId) => {
                     handleInputChange('major', majorName);
                     handleInputChange('intendedCourseTaxonomyId', taxonomyId.toString());
@@ -309,9 +310,11 @@ const CollegeFinder: React.FC = () => {
                 Which course did you major in? <span className="text-red-500">*</span>
               </label>
               <MajorSelector
-                majors={majors}
+                majors={coursesData}
                 value={formData.undergradMajor || null}
-                onChange={(value) => handleInputChange('undergradMajor', value)}
+                onChange={(value, taxonomyId) => {
+                  handleInputChange('undergradMajor', value);
+                }}
                 isRequired
               />
             </div>

@@ -6,7 +6,7 @@ import { CourseOption } from '@/types/api';
 interface MajorSelectorProps {
   majors: CourseOption[];
   value: string | null;
-  onChange: (majorId: string, taxonomyId: number) => void;  // Updated to include taxonomyId
+  onChange: (majorId: string, taxonomyId: number) => void;
   className?: string;
   placeholder?: string;
   isRequired?: boolean;
@@ -20,14 +20,26 @@ const MajorSelector: React.FC<MajorSelectorProps> = ({
   placeholder = 'Select Major',
   isRequired = false
 }) => {
-  // Convert majors to select options
-  const options = majors.map(major => ({
-    value: major.course_taxonomy_id.toString(),
-    label: major.course_name
-  }));
+  // Guard clause to ensure majors is defined and is an array
+  if (!majors || !Array.isArray(majors)) {
+    console.error("Majors is not defined or not an array:", majors);
+    return <div>Loading majors...</div>;
+  }
+
+  // Convert majors to select options - safely handle possible undefined values
+  const options = majors.map(major => {
+    if (!major || typeof major.course_taxonomy_id === 'undefined') {
+      console.warn("Invalid major object:", major);
+      return { value: "0", label: "Unknown" };
+    }
+    return {
+      value: String(major.course_taxonomy_id),
+      label: major.course_name
+    };
+  });
 
   // Find the selected option based on value
-  const selectedOption = options.find(option => option.value === value) || null;
+  const selectedOption = value ? options.find(option => option.value === value) || null : null;
 
   return (
     <Select
@@ -36,7 +48,7 @@ const MajorSelector: React.FC<MajorSelectorProps> = ({
       value={selectedOption}
       onChange={(option) => {
         if (option) {
-          const selectedMajor = majors.find(m => m.course_taxonomy_id.toString() === option.value);
+          const selectedMajor = majors.find(m => String(m.course_taxonomy_id) === option.value);
           if (selectedMajor) {
             onChange(selectedMajor.course_name, selectedMajor.course_taxonomy_id);
           }

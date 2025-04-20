@@ -4,6 +4,7 @@ export interface FormData {
   degree: 'Bachelor\'s' | 'Master\'s';
   country: string;
   major: string;
+  intendedCourseTaxonomyId: string; // Added this field
   undergradCollege: string;
   undergradMajor: string;
   score: number;
