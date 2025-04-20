@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
@@ -20,6 +19,7 @@ const initialFormData: Partial<FormData> = {
   intendedCourseTaxonomyId: '',
   undergradCollege: '',
   undergradMajor: '',
+  undergradMajorTaxonomyId: '',
   score: 0,
   scoreType: '10 CGPA',
   backlogs: 0,
@@ -150,7 +150,7 @@ const CollegeFinder: React.FC = () => {
           grade: formData.score?.toString() || '0',
           grade_scale: formData.scoreType?.split(' ')[0] || '10', // Extract just the number part
           college: 6, // Default value
-          major: formData.major || '',
+          major: formData.undergradMajorTaxonomyId || "24252", // Use the taxonomy ID from undergradMajor if available
           backlogs: formData.backlogs || 0,
           is_stem: true, // Default to true for CS, Data Science etc.
           SOP: 3, // Default values as per requirements
@@ -407,9 +407,10 @@ const CollegeFinder: React.FC = () => {
               </label>
               <MajorSelector
                 majors={coursesData}
-                value={formData.undergradMajor || null}
+                value={formData.undergradMajorTaxonomyId || null}
                 onChange={(value, taxonomyId) => {
                   handleInputChange('undergradMajor', value);
+                  handleInputChange('undergradMajorTaxonomyId', taxonomyId.toString());
                 }}
                 isRequired
               />
