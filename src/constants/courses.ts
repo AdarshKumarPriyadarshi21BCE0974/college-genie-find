@@ -1,3 +1,4 @@
+
 import { CourseOption } from '@/types/api';
 
 export const coursesData: CourseOption[] = [
@@ -342,4 +343,5 @@ export const coursesData: CourseOption[] = [
   { course_name: "Intellectual Property", course_taxonomy_id: 24231 },
   { course_name: "Metallurgical Engineering", course_taxonomy_id: 312 },
   { course_name: "Visual and Performing Arts General", course_taxonomy_id: 115 },
-  { course_name: "Ecommerce", course_taxonomy_id: 24541 },
+  { course_name: "Ecommerce", course_taxonomy_id: 24541 }
+];
