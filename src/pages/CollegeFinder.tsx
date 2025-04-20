@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import { FormData, University, countries, mockUniversities } from '../types';
+import { FormData, University, countries } from '../types';
 import CountrySelector from '../components/college-finder/CountrySelector';
 import MajorSelector from '../components/college-finder/MajorSelector';
 import ProgressSteps from '../components/college-finder/ProgressSteps';
@@ -137,9 +137,8 @@ const CollegeFinder: React.FC = () => {
           'United States': 'united_states',
           'Canada': 'canada',
           'United Kingdom': 'united_kingdom',
-          'Australia': 'australia',
-          'Germany': 'germany',
-          'France': 'france',
+          'Australia & New Zealand': 'australia_new_zealand',
+          'European Union': 'european_union',
           // Add more mappings as needed
         };
 
@@ -227,10 +226,20 @@ const CollegeFinder: React.FC = () => {
         // If we have universities from the API, use those
         if (allUniversities.length > 0) {
           setUniversities(allUniversities);
+          toast({
+            title: "Success",
+            description: `Found ${allUniversities.length} university recommendations!`,
+          });
         } else {
-          // Fallback to mock data if the API returns no universities
-          console.warn("No universities returned from API, using mock data");
-          setUniversities(mockUniversities);
+          // Show a toast message if no universities were returned
+          console.warn("No universities returned from API");
+          toast({
+            title: "No Results",
+            description: "No universities matched your criteria. Try adjusting your preferences.",
+            variant: "destructive"
+          });
+          // We'll still set an empty array and show the results page
+          setUniversities([]);
         }
         
         setShowResults(true);
@@ -241,8 +250,8 @@ const CollegeFinder: React.FC = () => {
           description: "Failed to fetch university recommendations. Please try again.",
           variant: "destructive"
         });
-        // Fallback to mock data on error
-        setUniversities(mockUniversities);
+        // We'll still go to results page but with empty data
+        setUniversities([]);
         setShowResults(true);
       } finally {
         setIsLoading(false);

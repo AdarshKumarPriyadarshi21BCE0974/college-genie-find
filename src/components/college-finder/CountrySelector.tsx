@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Select from 'react-select';
-import { Country } from '../../types';
+import { Country } from '@/types';
 
 interface CountrySelectorProps {
   countries: Country[];

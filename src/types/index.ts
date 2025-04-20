@@ -1,3 +1,4 @@
+
 // Define types for the CollegeFinder form
 export interface FormData {
   degree?: 'Bachelor\'s' | 'Master\'s';
@@ -43,6 +44,13 @@ export interface University {
   university_id?: string;
   university_slug?: string;
   annual_fee?: number;
+}
+
+// Define Country type explicitly
+export interface Country {
+  name: string;
+  flag: string;
+  code: string;
 }
 
 // Country data with flags

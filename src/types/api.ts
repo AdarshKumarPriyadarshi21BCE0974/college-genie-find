@@ -19,7 +19,7 @@ export interface UniversityRequestPayload {
   ielts_overall: number;
 }
 
-interface UniversityData {
+export interface UniversityData {
   university_courses_id: string;
   university_courses_credential: string;
   university_courses_name: string;
