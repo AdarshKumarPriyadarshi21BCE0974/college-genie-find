@@ -1,43 +1,51 @@
-
 // Define types for the CollegeFinder form
 export interface FormData {
-  degree: 'Bachelor\'s' | 'Master\'s';
+  degree?: 'Bachelor\'s' | 'Master\'s';
   country: string;
   major: string;
   intendedCourseTaxonomyId: string; // Added this field
   undergradCollege: string;
   undergradMajor: string;
   score: number;
-  scoreType: '10 CGPA' | '100 %' | '4 GPA' | '5 GPA';
+  scoreType: string;
   backlogs: number;
-  englishTest: 'TOEFL' | 'IELTS' | 'PTE' | null;
+  englishTest: string | null;
   englishScore: number;
-  aptitudeTest: 'GRE' | 'GMAT' | 'None';
+  aptitudeTest: string;
+  workExperience: number;
+  researchPapers: string;
+  projects: number;
+  gmatScore?: number;
   greVerbal?: number;
   greQuants?: number;
   greAwa?: number;
-  gmatScore?: number;
-  workExperience: number;
-  researchPapers: 'International' | 'National' | 'None';
-  projects: number;
 }
 
 export interface University {
   name: string;
   country: string;
-  logo: string;
   rank: number;
+  logo: string;
   matchPercentage: number;
   programs: string[];
+  university_courses_id?: string;
+  university_courses_credential?: string;
+  university_courses_name?: string;
+  university_courses_tuition_usd?: number;
+  university_courses_level?: number;
+  location_name?: string;
+  university_courses_slug?: string;
+  university_abb?: string;
+  is_partner?: boolean;
+  university_courses_is_partner?: boolean;
+  university_courses_tuition_local?: number;
+  university_courses_duration?: number;
+  university_id?: string;
+  university_slug?: string;
+  annual_fee?: number;
 }
 
 // Country data with flags
-export interface Country {
-  name: string;
-  flag: string;
-  code: string;
-}
-
 export const countries: Country[] = [
   { name: "United States", flag: "🇺🇸", code: "US" },
   { name: "United Kingdom", flag: "🇬🇧", code: "UK" },

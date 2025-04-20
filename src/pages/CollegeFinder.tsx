@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
@@ -10,7 +11,7 @@ import LoadingAnimation from '../components/college-finder/LoadingAnimation';
 import { toast } from '../hooks/use-toast';
 import { coursesData } from '@/constants/courses';
 import { fetchUniversityRecommendations } from '@/utils/api';
-import type { UniversityRequestPayload } from '@/types/api';
+import type { UniversityRequestPayload, UniversityResponse } from '@/types/api';
 
 const initialFormData: Partial<FormData> = {
   degree: undefined,
@@ -132,23 +133,106 @@ const CollegeFinder: React.FC = () => {
       setIsLoading(true);
       
       try {
-        const payload: UniversityRequestPayload = {
-          country: formData.country?.toLowerCase().replace(/\s+/g, '_') || '',
-          intended_course_taxonomy_id: parseInt(formData.intendedCourseTaxonomyId || '0'),
-          grade: formData.score?.toString() || '0',
-          grade_scale: formData.scoreType || '10',
-          college: 6,
-          major: formData.major || '',
-          backlogs: formData.backlogs || 0,
-          is_stem: true,
-          SOP: 3,
-          LOR: 3,
-          Resume: 3,
-          ielts_overall: formData.englishTest === 'IELTS' ? (formData.englishScore || 0) : 9
+        const countryMapping: Record<string, string> = {
+          'United States': 'united_states',
+          'Canada': 'canada',
+          'United Kingdom': 'united_kingdom',
+          'Australia': 'australia',
+          'Germany': 'germany',
+          'France': 'france',
+          // Add more mappings as needed
         };
 
+        const mappedCountry = countryMapping[formData.country || ''] || formData.country?.toLowerCase().replace(/\s+/g, '_') || '';
+        
+        const payload: UniversityRequestPayload = {
+          country: mappedCountry,
+          intended_course_taxonomy_id: parseInt(formData.intendedCourseTaxonomyId || '0'),
+          grade: formData.score?.toString() || '0',
+          grade_scale: formData.scoreType?.split(' ')[0] || '10', // Extract just the number part
+          college: 6, // Default value
+          major: formData.major || '',
+          backlogs: formData.backlogs || 0,
+          is_stem: true, // Default to true for CS, Data Science etc.
+          SOP: 3, // Default values as per requirements
+          LOR: 3,
+          Resume: 3,
+          ielts_overall: formData.englishTest === 'IELTS' ? (formData.englishScore || 0) : 9 // Default to 9 if not IELTS
+        };
+
+        console.log("Sending payload to API:", payload);
         const result = await fetchUniversityRecommendations(payload);
-        setUniversities(result.universities);
+        console.log("Received API response:", result);
+        
+        // Transform the API response into our University format
+        const allUniversities: University[] = [];
+        
+        // Process ambitious universities
+        if (result.data.ambitious_universities && result.data.ambitious_universities.length > 0) {
+          const ambitiousUnivs = result.data.ambitious_universities.map(uni => ({
+            name: uni.university_name,
+            country: uni.country,
+            rank: uni.university_global_rank,
+            logo: `https://s3.ap-south-1.amazonaws.com/testbucket.static.yocket.in/university_logos/${uni.university_logo_url}.jpg`,
+            matchPercentage: Math.min(parseInt(uni.university_courses_points) || 75, 100),
+            programs: [uni.university_courses_name],
+            university_courses_id: uni.university_courses_id,
+            university_courses_credential: uni.university_courses_credential,
+            university_courses_tuition_usd: uni.university_courses_tuition_usd,
+            location_name: uni.location_name,
+            university_courses_duration: uni.university_courses_duration,
+            annual_fee: uni.annual_fee
+          }));
+          allUniversities.push(...ambitiousUnivs);
+        }
+
+        // Process moderate universities
+        if (result.data.moderate_universities && result.data.moderate_universities.length > 0) {
+          const moderateUnivs = result.data.moderate_universities.map(uni => ({
+            name: uni.university_name,
+            country: uni.country,
+            rank: uni.university_global_rank,
+            logo: `https://s3.ap-south-1.amazonaws.com/testbucket.static.yocket.in/university_logos/${uni.university_logo_url}.jpg`,
+            matchPercentage: Math.min(parseInt(uni.university_courses_points) || 65, 100),
+            programs: [uni.university_courses_name],
+            university_courses_id: uni.university_courses_id,
+            university_courses_credential: uni.university_courses_credential,
+            university_courses_tuition_usd: uni.university_courses_tuition_usd,
+            location_name: uni.location_name,
+            university_courses_duration: uni.university_courses_duration,
+            annual_fee: uni.annual_fee
+          }));
+          allUniversities.push(...moderateUnivs);
+        }
+
+        // Process safe universities
+        if (result.data.safe_universities && result.data.safe_universities.length > 0) {
+          const safeUnivs = result.data.safe_universities.map(uni => ({
+            name: uni.university_name,
+            country: uni.country,
+            rank: uni.university_global_rank,
+            logo: `https://s3.ap-south-1.amazonaws.com/testbucket.static.yocket.in/university_logos/${uni.university_logo_url}.jpg`,
+            matchPercentage: Math.min(parseInt(uni.university_courses_points) || 55, 100),
+            programs: [uni.university_courses_name],
+            university_courses_id: uni.university_courses_id,
+            university_courses_credential: uni.university_courses_credential,
+            university_courses_tuition_usd: uni.university_courses_tuition_usd,
+            location_name: uni.location_name,
+            university_courses_duration: uni.university_courses_duration,
+            annual_fee: uni.annual_fee
+          }));
+          allUniversities.push(...safeUnivs);
+        }
+
+        // If we have universities from the API, use those
+        if (allUniversities.length > 0) {
+          setUniversities(allUniversities);
+        } else {
+          // Fallback to mock data if the API returns no universities
+          console.warn("No universities returned from API, using mock data");
+          setUniversities(mockUniversities);
+        }
+        
         setShowResults(true);
       } catch (error) {
         console.error('Error fetching university recommendations:', error);
@@ -157,6 +241,9 @@ const CollegeFinder: React.FC = () => {
           description: "Failed to fetch university recommendations. Please try again.",
           variant: "destructive"
         });
+        // Fallback to mock data on error
+        setUniversities(mockUniversities);
+        setShowResults(true);
       } finally {
         setIsLoading(false);
       }
@@ -622,54 +709,67 @@ const CollegeFinder: React.FC = () => {
     return (
       <div>
         <h2 className="text-2xl font-bold mb-6">Top University Recommendations</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {universities.map((university, index) => (
-            <div key={index} className="border rounded-lg shadow-md overflow-hidden">
-              <div className="p-4 flex items-center border-b">
-                <div className="w-16 h-16 flex-shrink-0 mr-4">
-                  <img 
-                    src={university.logo} 
-                    alt={`${university.name} logo`}
-                    className="w-full h-full object-contain"
-                  />
+        {universities.length === 0 ? (
+          <p className="text-gray-600">No universities found matching your criteria.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {universities.map((university, index) => (
+              <div key={index} className="border rounded-lg shadow-md overflow-hidden">
+                <div className="p-4 flex items-center border-b">
+                  <div className="w-16 h-16 flex-shrink-0 mr-4">
+                    <img 
+                      src={university.logo} 
+                      alt={`${university.name} logo`}
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150?text=University';
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">{university.name}</h3>
+                    <p className="text-gray-600">{university.country} {university.location_name ? `- ${university.location_name}` : ''}</p>
+                  </div>
+                  <div className="ml-auto text-right">
+                    <span className="text-sm text-gray-600">World Rank</span>
+                    <p className="font-bold">{university.rank || 'N/A'}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-lg">{university.name}</h3>
-                  <p className="text-gray-600">{university.country}</p>
-                </div>
-                <div className="ml-auto text-right">
-                  <span className="text-sm text-gray-600">World Rank</span>
-                  <p className="font-bold">{university.rank}</p>
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium">Match Percentage</span>
-                  <span className="font-bold text-orange-500">{university.matchPercentage}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div 
-                    className="bg-orange-500 h-2.5 rounded-full" 
-                    style={{ width: `${university.matchPercentage}%` }}
-                  ></div>
-                </div>
-                <div className="mt-4">
-                  <span className="text-sm font-medium">Available Programs:</span>
-                  <div className="mt-1 flex flex-wrap gap-2">
-                    {university.programs.map((program, idx) => (
-                      <span 
-                        key={idx}
-                        className="inline-block bg-gray-100 px-2 py-1 text-xs rounded"
-                      >
-                        {program}
-                      </span>
-                    ))}
+                <div className="p-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium">Match Percentage</span>
+                    <span className="font-bold text-orange-500">{university.matchPercentage}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div 
+                      className="bg-orange-500 h-2.5 rounded-full" 
+                      style={{ width: `${university.matchPercentage}%` }}
+                    ></div>
+                  </div>
+                  
+                  <div className="mt-4 grid grid-cols-2 gap-2">
+                    <div>
+                      <span className="text-sm font-medium">Course:</span>
+                      <p>{university.programs && university.programs.length > 0 ? university.programs[0] : 'N/A'}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium">Credential:</span>
+                      <p>{university.university_courses_credential || 'MS'}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium">Duration:</span>
+                      <p>{university.university_courses_duration ? `${university.university_courses_duration} months` : 'N/A'}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium">Tuition Fee:</span>
+                      <p>${university.university_courses_tuition_usd?.toLocaleString() || university.annual_fee?.toLocaleString() || 'N/A'}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   };
