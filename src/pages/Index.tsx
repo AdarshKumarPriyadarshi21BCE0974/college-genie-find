@@ -43,7 +43,7 @@ const Index = () => {
                 <div className="pl-4 sm:pl-6 lg:pl-8">
                   <img
                     className="w-full rounded-lg shadow-xl"
-                    src={`${window.location.origin}/lovable-uploads/937faf55-ea20-4ad9-ab14-a46d84fb6db7.png`}
+                    src="https://raw.githubusercontent.com/AdarshKumarPriyadarshi21BCE0974/college-genie-find/main/FrontPoster.jpg"
                     alt="Students on university campus"
                   />
                 </div>
@@ -136,3 +136,4 @@ const Index = () => {
 };
 
 export default Index;
+
