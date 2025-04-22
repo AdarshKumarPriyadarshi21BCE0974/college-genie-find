@@ -17,6 +17,12 @@ export interface UniversityRequestPayload {
   LOR: number;
   Resume: number;
   ielts_overall: number;
+  gre_quants?: number;
+  gre_verbal?: number;
+  gre_awa?: number;
+  gre_overall?: number;
+  work_experience_in_months?: number;
+  no_of_projects?: number;
 }
 
 export interface UniversityData {
@@ -55,5 +61,9 @@ export interface UniversityResponse {
     ambitious_universities: UniversityData[];
     moderate_universities: UniversityData[];
     safe_universities: UniversityData[];
+    student_score?: number;
+    use_course_group?: boolean;
+    course_group_id?: number;
+    origin?: string;
   };
 }

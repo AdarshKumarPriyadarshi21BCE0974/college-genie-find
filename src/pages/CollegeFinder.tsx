@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
@@ -139,11 +140,23 @@ const CollegeFinder: React.FC = () => {
           'United Kingdom': 'united_kingdom',
           'Australia & New Zealand': 'australia_new_zealand',
           'European Union': 'european_union',
-          // Add more mappings as needed
+          'Singapore': 'singapore',
+          'Hong Kong': 'hong_kong',
+          'Netherlands': 'netherlands',
+          'Germany': 'germany',
+          'Switzerland': 'switzerland',
+          'Ireland': 'ireland',
+          'Japan': 'japan'
         };
 
         const mappedCountry = countryMapping[formData.country || ''] || formData.country?.toLowerCase().replace(/\s+/g, '_') || '';
         
+        // Calculate GRE overall score if GRE test is selected
+        let greOverall = undefined;
+        if (formData.aptitudeTest === 'GRE' && formData.greVerbal && formData.greQuants) {
+          greOverall = formData.greVerbal + formData.greQuants;
+        }
+
         const payload: UniversityRequestPayload = {
           country: mappedCountry,
           intended_course_taxonomy_id: parseInt(formData.intendedCourseTaxonomyId || '0'),
@@ -156,7 +169,13 @@ const CollegeFinder: React.FC = () => {
           SOP: 3, // Default values as per requirements
           LOR: 3,
           Resume: 3,
-          ielts_overall: formData.englishTest === 'IELTS' ? (formData.englishScore || 0) : 9 // Default to 9 if not IELTS
+          ielts_overall: formData.englishTest === 'IELTS' ? (formData.englishScore || 0) : 9, // Default to 9 if not IELTS
+          gre_quants: formData.aptitudeTest === 'GRE' ? formData.greQuants : undefined,
+          gre_verbal: formData.aptitudeTest === 'GRE' ? formData.greVerbal : undefined,
+          gre_awa: formData.aptitudeTest === 'GRE' ? formData.greAwa : undefined,
+          gre_overall: greOverall,
+          work_experience_in_months: formData.workExperience,
+          no_of_projects: formData.projects
         };
 
         console.log("Sending payload to API:", payload);
@@ -281,30 +300,33 @@ const CollegeFinder: React.FC = () => {
     setFormErrors({});
   };
 
-  const isNextButtonDisabled = () => {
-    if (Object.keys(formErrors).length > 0) return true;
-    
-    switch (currentStep) {
+  const isStepComplete = (step: number): boolean => {
+    switch (step) {
       case 1:
-        return !formData.degree || !formData.country || !formData.major;
+        return !!formData.degree && !!formData.country && !!formData.major;
       case 2:
-        return !formData.undergradCollege || !formData.undergradMajor || !formData.score;
+        return !!formData.undergradCollege && !!formData.undergradMajor && 
+               (formData.score !== undefined && formData.score > 0);
       case 3:
-        if (formData.englishTest && (formData.englishScore <= 0)) {
-          return true;
-        }
-        if (formData.aptitudeTest === 'GRE' && (
-          !formData.greVerbal || !formData.greQuants || !formData.greAwa
-        )) {
-          return true;
-        }
-        if (formData.aptitudeTest === 'GMAT' && !formData.gmatScore) {
-          return true;
-        }
-        return false;
+        if (!formData.englishTest) return false;
+        if (formData.englishTest && (formData.englishScore === undefined || formData.englishScore <= 0)) return false;
+        if (formData.aptitudeTest === 'GRE' && (!formData.greVerbal || !formData.greQuants || !formData.greAwa)) return false;
+        if (formData.aptitudeTest === 'GMAT' && !formData.gmatScore) return false;
+        return true;
+      case 4:
+        // Step 4 has optional fields, so it's always complete
+        return true;
       default:
         return false;
     }
+  };
+
+  const isNextButtonDisabled = () => {
+    // Check for any form errors first
+    if (Object.keys(formErrors).length > 0) return true;
+    
+    // Then check if the current step is complete
+    return !isStepComplete(currentStep);
   };
 
   const getEnglishScorePlaceholder = () => {
@@ -569,7 +591,7 @@ const CollegeFinder: React.FC = () => {
                 <div className="mt-4 grid grid-cols-3 gap-4">
                   <div>
                     <label className="block text-gray-700 text-sm font-semibold mb-2">
-                      Verbal
+                      Verbal <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
@@ -584,7 +606,7 @@ const CollegeFinder: React.FC = () => {
                   </div>
                   <div>
                     <label className="block text-gray-700 text-sm font-semibold mb-2">
-                      Quants
+                      Quants <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
@@ -599,7 +621,7 @@ const CollegeFinder: React.FC = () => {
                   </div>
                   <div>
                     <label className="block text-gray-700 text-sm font-semibold mb-2">
-                      AWA
+                      AWA <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
@@ -619,7 +641,7 @@ const CollegeFinder: React.FC = () => {
               {formData.aptitudeTest === 'GMAT' && (
                 <div className="mt-4">
                   <label className="block text-gray-700 text-sm font-semibold mb-2">
-                    Total Score
+                    Total Score <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
