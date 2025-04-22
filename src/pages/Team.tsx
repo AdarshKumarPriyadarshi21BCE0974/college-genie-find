@@ -7,7 +7,7 @@ const teamMembers = [
   {
     name: "Adarsh Kumar Priyadarshi",
     role: "ML Developer & Co-founder",
-    image: "https://github.com/AdarshKumarPriyadarshi21BCE0974/college-genie-find/blob/main/AdarshKumarPriyadarshi.jpg",
+    image: "https://raw.githubusercontent.com/AdarshKumarPriyadarshi21BCE0974/college-genie-find/main/AdarshKumarPriyadarshi.jpg",
     description: "Adarsh specializes in machine learning algorithms and data analysis, developing the recommendation engine that powers College Genie.",
     links: {
       linkedin: "#",
@@ -18,7 +18,7 @@ const teamMembers = [
   {
     name: "Taniya Khemchandani",
     role: "Frontend Developer & Co-founder",
-    image: "https://github.com/AdarshKumarPriyadarshi21BCE0974/college-genie-find/blob/main/TaniyaKhemchandani.jpg",
+    image: "https://raw.githubusercontent.com/AdarshKumarPriyadarshi21BCE0974/college-genie-find/main/TaniyaKhemchandani.jpg",
     description: "Taniya leads frontend development and user experience, creating the intuitive interface that makes College Genie easy to use.",
     links: {
       linkedin: "#",

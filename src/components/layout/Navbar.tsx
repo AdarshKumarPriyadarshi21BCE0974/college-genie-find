@@ -9,7 +9,6 @@ const Navbar = () => {
   const [showBachelorPopup, setShowBachelorPopup] = useState(false);
   const location = useLocation();
 
-  // Listen for custom event from the CollegeFinder component
   useEffect(() => {
     const handleShowBachelorPopup = () => {
       setShowBachelorPopup(true);
@@ -30,7 +29,7 @@ const Navbar = () => {
               <Link to="/" className="flex-shrink-0 flex items-center">
                 <div className="flex items-center gap-2">
                   <img 
-                    src="https://github.com/AdarshKumarPriyadarshi21BCE0974/college-genie-find/blob/main/Logo.jpg"
+                    src="https://raw.githubusercontent.com/AdarshKumarPriyadarshi21BCE0974/college-genie-find/main/Logo.jpg"
                     alt="College Genie Logo" 
                     className="h-10 w-10 rounded-full"
                   />
