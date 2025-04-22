@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { X } from "lucide-react";
@@ -31,7 +30,7 @@ const Navbar = () => {
               <Link to="/" className="flex-shrink-0 flex items-center">
                 <div className="flex items-center gap-2">
                   <img 
-                    src={`${window.location.origin}/lovable-uploads/87a18f30-77c1-4a0f-8d46-b0d162d0a383.png`}
+                    src="https://github.com/AdarshKumarPriyadarshi21BCE0974/college-genie-find/blob/main/Logo.jpg"
                     alt="College Genie Logo" 
                     className="h-10 w-10 rounded-full"
                   />
