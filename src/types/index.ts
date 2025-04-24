@@ -50,6 +50,7 @@ export interface Country {
 
 // Country data with flags
 export const countries: Country[] = [
+  { name: "India", flag: "🇮🇳", code: "IN" },
   { name: "United States", flag: "🇺🇸", code: "US" },
   { name: "United Kingdom", flag: "🇬🇧", code: "UK" },
   { name: "Canada", flag: "🇨🇦", code: "CA" },
@@ -63,3 +64,4 @@ export const countries: Country[] = [
   { name: "Ireland", flag: "🇮🇪", code: "IE" },
   { name: "Japan", flag: "🇯🇵", code: "JP" }
 ];
+

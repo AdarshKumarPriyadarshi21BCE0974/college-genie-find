@@ -5,6 +5,11 @@ export const fetchUniversityRecommendations = async (payload: UniversityRequestP
   try {
     console.log("Sending API request with payload:", payload);
     
+    // Update the country value for India in the payload
+    if (payload.country === 'india') {
+      payload.country = 'india';  // Keep as lowercase for API compatibility
+    }
+    
     const response = await fetch('https://api.yocket.com/grad-school-finder/3610297b-98e9-4f23-9e49-956ce3e24dc0', {
       method: 'POST',
       headers: {
@@ -27,3 +32,4 @@ export const fetchUniversityRecommendations = async (payload: UniversityRequestP
     throw error;
   }
 };
+

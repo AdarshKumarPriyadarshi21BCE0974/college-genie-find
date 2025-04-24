@@ -135,6 +135,7 @@ const CollegeFinder: React.FC = () => {
       
       try {
         const countryMapping: Record<string, string> = {
+          'India': 'india',
           'United States': 'united_states',
           'Canada': 'canada',
           'United Kingdom': 'united_kingdom',
