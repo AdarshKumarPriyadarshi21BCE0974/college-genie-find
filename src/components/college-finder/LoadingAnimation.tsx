@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Progress } from '../ui/progress';
 
 interface LoadingAnimationProps {
   onComplete: () => void;
@@ -22,7 +23,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ onComplete }) => {
           setStage(2);
         }
         
-        return prev + 5;
+        return prev + 4;
       });
     }, 150);
 
@@ -30,7 +31,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ onComplete }) => {
   }, [onComplete]);
 
   return (
-    <div className="fixed inset-0 bg-gray-50 flex flex-col items-center justify-center">
+    <div className="fixed inset-0 bg-gray-50 flex flex-col items-center justify-center z-50">
       <div className="max-w-md mx-auto text-center p-6">
         <h3 className="text-2xl font-medium mb-8 text-gray-800">
           {stage === 1 ? "Our algorithm is evaluating your profile..." : "Matching your preferences to universities..."}
@@ -54,11 +55,8 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ onComplete }) => {
           </div>
         )}
         
-        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-          <div 
-            className="bg-orange-500 h-2.5 rounded-full transition-all duration-300 ease-out" 
-            style={{ width: `${progress}%` }}
-          ></div>
+        <div className="mb-2">
+          <Progress value={progress} className="h-2.5" />
         </div>
         <p className="text-lg font-medium text-gray-600">{progress}%</p>
       </div>

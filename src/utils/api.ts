@@ -1,3 +1,4 @@
+
 import { UniversityRequestPayload, UniversityResponse } from '@/types/api';
 
 const indianUniversitiesDummyData: UniversityResponse = {
@@ -29,7 +30,7 @@ const indianUniversitiesDummyData: UniversityResponse = {
         university_logo_url: "iisc_logo.jpg",
         country: "India",
         symbol: "INR",
-        university_courses_points: "175",
+        university_courses_points: "87",
         users_university_application: null,
         annual_fee: 80000
       },
@@ -56,7 +57,7 @@ const indianUniversitiesDummyData: UniversityResponse = {
         university_logo_url: "iitb_logo.jpg",
         country: "India",
         symbol: "INR",
-        university_courses_points: "170",
+        university_courses_points: "85",
         users_university_application: null,
         annual_fee: 60000
       },
@@ -83,7 +84,7 @@ const indianUniversitiesDummyData: UniversityResponse = {
         university_logo_url: "iitd_logo.jpg",
         country: "India",
         symbol: "INR",
-        university_courses_points: "168",
+        university_courses_points: "83",
         users_university_application: null,
         annual_fee: 70000
       }
@@ -112,7 +113,7 @@ const indianUniversitiesDummyData: UniversityResponse = {
         university_logo_url: "iiitd_logo.jpg",
         country: "India",
         symbol: "INR",
-        university_courses_points: "145",
+        university_courses_points: "72",
         users_university_application: null,
         annual_fee: 50000
       },
@@ -139,7 +140,7 @@ const indianUniversitiesDummyData: UniversityResponse = {
         university_logo_url: "iitm_logo.jpg",
         country: "India",
         symbol: "INR",
-        university_courses_points: "140",
+        university_courses_points: "70",
         users_university_application: null,
         annual_fee: 55000
       },
@@ -166,7 +167,7 @@ const indianUniversitiesDummyData: UniversityResponse = {
         university_logo_url: "iitk_logo.jpg",
         country: "India",
         symbol: "INR",
-        university_courses_points: "138",
+        university_courses_points: "68",
         users_university_application: null,
         annual_fee: 52500
       }
@@ -195,7 +196,7 @@ const indianUniversitiesDummyData: UniversityResponse = {
         university_logo_url: "bits_logo.jpg",
         country: "India",
         symbol: "INR",
-        university_courses_points: "125",
+        university_courses_points: "62",
         users_university_application: null,
         annual_fee: 40000
       },
@@ -222,7 +223,7 @@ const indianUniversitiesDummyData: UniversityResponse = {
         university_logo_url: "iiith_logo.jpg",
         country: "India",
         symbol: "INR",
-        university_courses_points: "120",
+        university_courses_points: "58",
         users_university_application: null,
         annual_fee: 37500
       },
@@ -249,7 +250,7 @@ const indianUniversitiesDummyData: UniversityResponse = {
         university_logo_url: "iitkgp_logo.jpg",
         country: "India",
         symbol: "INR",
-        university_courses_points: "118",
+        university_courses_points: "56",
         users_university_application: null,
         annual_fee: 35000
       }
